@@ -102,6 +102,19 @@
 
 <div class="row g-3 mb-4">
     <div class="col-xl-3 col-md-6">
+        <div class="stat-card stat-orange">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stat-label">Pending Certificates</div>
+                    <div class="stat-value">{{ number_format($pendingCertificates) }}</div>
+                </div>
+                <div class="stat-icon">
+                    <i class="bi bi-file-earmark-text-fill"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
         <div class="stat-card stat-blue">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
@@ -197,7 +210,7 @@
     <div class="col-lg-5">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <span><i class="bi bi-journal-text me-2"></i>Recent Blotter Records</span>
+                <span><i class="bi bi-journal-text me-2"></i>Recent Blotter Reports</span>
                 <a href="{{ route('blotters.index') }}" class="btn btn-sm btn-outline-primary">View All</a>
             </div>
             <div class="card-body p-0">

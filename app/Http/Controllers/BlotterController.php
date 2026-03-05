@@ -28,35 +28,14 @@ class BlotterController extends Controller
         }
 
         $blotters = $query->latest()->paginate(15);
-        return view('blotters.index', compact('blotters'));
-    }
 
-    public function create()
-    {
-        $residents = Resident::where('status', 'Active')->get();
-        return view('blotters.create', compact('residents'));
-    }
+        // Counts for status cards
+        $pendingCount = Blotter::where('status', 'Pending')->count();
+        $ongoingCount = Blotter::where('status', 'Ongoing')->count();
+        $resolvedCount = Blotter::where('status', 'Resolved')->count();
+        $dismissedCount = Blotter::where('status', 'Dismissed')->count();
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'complainant_id' => 'required|exists:residents,id',
-            'respondent_id' => 'required|exists:residents,id|different:complainant_id',
-            'incident_details' => 'required|string',
-            'incident_type' => 'required|string|max:255',
-            'incident_date' => 'required|date',
-            'incident_location' => 'required|string|max:255',
-            'remarks' => 'nullable|string',
-        ]);
-
-        $validated['case_no'] = 'BLT-' . date('Y') . '-' . str_pad(Blotter::count() + 1, 4, '0', STR_PAD_LEFT);
-        $validated['status'] = 'Pending';
-        $validated['recorded_by'] = auth()->id();
-
-        Blotter::create($validated);
-
-        return redirect()->route('blotters.index')
-            ->with('success', 'Blotter record added successfully.');
+        return view('blotters.index', compact('blotters', 'pendingCount', 'ongoingCount', 'resolvedCount', 'dismissedCount'));
     }
 
     public function show(Blotter $blotter)
@@ -65,21 +44,15 @@ class BlotterController extends Controller
         return view('blotters.show', compact('blotter'));
     }
 
-    public function edit(Blotter $blotter)
+    public function review(Blotter $blotter)
     {
-        $residents = Resident::where('status', 'Active')->get();
-        return view('blotters.edit', compact('blotter', 'residents'));
+        $blotter->load(['complainant', 'respondent', 'recordedBy']);
+        return view('blotters.review', compact('blotter'));
     }
 
-    public function update(Request $request, Blotter $blotter)
+    public function updateStatus(Request $request, Blotter $blotter)
     {
         $validated = $request->validate([
-            'complainant_id' => 'required|exists:residents,id',
-            'respondent_id' => 'required|exists:residents,id|different:complainant_id',
-            'incident_details' => 'required|string',
-            'incident_type' => 'required|string|max:255',
-            'incident_date' => 'required|date',
-            'incident_location' => 'required|string|max:255',
             'status' => 'required|in:Pending,Ongoing,Resolved,Dismissed',
             'action_taken' => 'nullable|string',
             'remarks' => 'nullable|string',
@@ -88,7 +61,7 @@ class BlotterController extends Controller
         $blotter->update($validated);
 
         return redirect()->route('blotters.show', $blotter)
-            ->with('success', 'Blotter record updated successfully.');
+            ->with('success', 'Blotter status updated successfully.');
     }
 
     public function destroy(Blotter $blotter)

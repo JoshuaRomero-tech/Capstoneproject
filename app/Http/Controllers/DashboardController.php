@@ -21,6 +21,7 @@ class DashboardController extends Controller
         $totalVoters = Resident::where('status', 'Active')->where('voter_status', 'Registered')->count();
         $totalOfficials = Official::where('status', 'Active')->count();
         $pendingBlotters = Blotter::where('status', 'Pending')->count();
+        $pendingCertificates = Certificate::where('status', 'Pending')->count();
         $certificatesThisMonth = Certificate::whereMonth('date_issued', now()->month)
             ->whereYear('date_issued', now()->year)->count();
 
@@ -39,6 +40,7 @@ class DashboardController extends Controller
             'totalVoters',
             'totalOfficials',
             'pendingBlotters',
+            'pendingCertificates',
             'certificatesThisMonth',
             'recentResidents',
             'recentBlotters'

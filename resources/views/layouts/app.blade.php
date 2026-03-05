@@ -227,12 +227,21 @@
         <ul class="nav flex-column">
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('certificates*') ? 'active' : '' }}" href="{{ route('certificates.index') }}">
-                    <i class="bi bi-file-earmark-text-fill"></i> Certificates
+                    <i class="bi bi-file-earmark-text-fill"></i> Certificate Requests
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('blotters*') ? 'active' : '' }}" href="{{ route('blotters.index') }}">
-                    <i class="bi bi-journal-text"></i> Blotter Records
+                    <i class="bi bi-journal-text"></i> Blotter Reports
+                </a>
+            </li>
+        </ul>
+
+        <div class="nav-section">Content</div>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('announcements*') ? 'active' : '' }}" href="{{ route('announcements.index') }}">
+                    <i class="bi bi-megaphone-fill"></i> Announcements
                 </a>
             </li>
         </ul>

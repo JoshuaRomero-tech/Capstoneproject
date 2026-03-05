@@ -153,6 +153,11 @@
                 <button type="submit" class="btn btn-primary btn-login w-100 text-white">
                     Sign In <i class="bi bi-arrow-right ms-1"></i>
                 </button>
+                <div class="text-center mt-3">
+                    <a href="{{ route('public.home') }}" class="text-muted small text-decoration-none">
+                        <i class="bi bi-arrow-left me-1"></i> Back to Community Portal
+                    </a>
+                </div>
             </form>
         </div>
     </div>

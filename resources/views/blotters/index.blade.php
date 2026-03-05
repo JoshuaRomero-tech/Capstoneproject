@@ -1,14 +1,74 @@
 @extends('layouts.app')
-@section('title', 'Blotter Records')
-@section('page-title', 'Blotter Records')
-@section('breadcrumb', 'Track and manage blotter cases')
+@section('title', 'Blotter Reports')
+@section('page-title', 'Blotter Reports')
+@section('breadcrumb', 'Review and manage blotter reports')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h5 class="mb-0">Blotter Records</h5>
-    <a href="{{ route('blotters.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> New Blotter</a>
+{{-- Status Summary Cards --}}
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <a href="{{ route('blotters.index', ['status' => 'Pending']) }}" class="text-decoration-none">
+            <div class="card border-start border-4 border-warning shadow-sm">
+                <div class="card-body d-flex align-items-center py-3">
+                    <div class="rounded-circle bg-warning bg-opacity-10 p-3 me-3">
+                        <i class="bi bi-hourglass-split text-warning fs-4"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted small">Pending</div>
+                        <div class="fw-bold fs-4 text-warning">{{ $pendingCount }}</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="{{ route('blotters.index', ['status' => 'Ongoing']) }}" class="text-decoration-none">
+            <div class="card border-start border-4 border-info shadow-sm">
+                <div class="card-body d-flex align-items-center py-3">
+                    <div class="rounded-circle bg-info bg-opacity-10 p-3 me-3">
+                        <i class="bi bi-arrow-repeat text-info fs-4"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted small">Ongoing</div>
+                        <div class="fw-bold fs-4 text-info">{{ $ongoingCount }}</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="{{ route('blotters.index', ['status' => 'Resolved']) }}" class="text-decoration-none">
+            <div class="card border-start border-4 border-success shadow-sm">
+                <div class="card-body d-flex align-items-center py-3">
+                    <div class="rounded-circle bg-success bg-opacity-10 p-3 me-3">
+                        <i class="bi bi-check-circle text-success fs-4"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted small">Resolved</div>
+                        <div class="fw-bold fs-4 text-success">{{ $resolvedCount }}</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="{{ route('blotters.index', ['status' => 'Dismissed']) }}" class="text-decoration-none">
+            <div class="card border-start border-4 border-secondary shadow-sm">
+                <div class="card-body d-flex align-items-center py-3">
+                    <div class="rounded-circle bg-secondary bg-opacity-10 p-3 me-3">
+                        <i class="bi bi-x-circle text-secondary fs-4"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted small">Dismissed</div>
+                        <div class="fw-bold fs-4 text-secondary">{{ $dismissedCount }}</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
 </div>
 
+{{-- Filters --}}
 <div class="card mb-3">
     <div class="card-body py-2">
         <form method="GET" action="{{ route('blotters.index') }}" class="row g-2 align-items-end">
@@ -33,6 +93,7 @@
     </div>
 </div>
 
+{{-- Table --}}
 <div class="card">
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -62,17 +123,19 @@
                         </td>
                         <td>
                             <div class="btn-group btn-group-sm">
-                                <a href="{{ route('blotters.show', $blotter) }}" class="btn btn-outline-info"><i class="bi bi-eye"></i></a>
-                                <a href="{{ route('blotters.edit', $blotter) }}" class="btn btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                                <a href="{{ route('blotters.show', $blotter) }}" class="btn btn-outline-info" title="View"><i class="bi bi-eye"></i></a>
+                                @if($blotter->status === 'Pending' || $blotter->status === 'Ongoing')
+                                    <a href="{{ route('blotters.review', $blotter) }}" class="btn btn-outline-primary" title="Review"><i class="bi bi-clipboard-check"></i></a>
+                                @endif
                                 <form action="{{ route('blotters.destroy', $blotter) }}" method="POST" onsubmit="return confirm('Delete this record?')">
                                     @csrf @method('DELETE')
-                                    <button class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i></button>
+                                    <button class="btn btn-outline-danger btn-sm" title="Delete"><i class="bi bi-trash"></i></button>
                                 </form>
                             </div>
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="7" class="text-center text-muted py-4">No blotter records found.</td></tr>
+                    <tr><td colspan="7" class="text-center text-muted py-4">No blotter reports found.</td></tr>
                     @endforelse
                 </tbody>
             </table>

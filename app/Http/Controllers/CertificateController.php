@@ -10,10 +10,14 @@ class CertificateController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Certificate::with(['resident', 'issuedBy']);
+        $query = Certificate::with(['resident', 'issuedBy', 'reviewedBy']);
 
         if ($request->filled('type')) {
             $query->where('type', $request->type);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
         }
 
         if ($request->filled('search')) {
@@ -25,45 +29,70 @@ class CertificateController extends Controller
         }
 
         $certificates = $query->latest()->paginate(15);
-        return view('certificates.index', compact('certificates'));
-    }
 
-    public function create()
-    {
-        $residents = Resident::where('status', 'Active')->get();
-        return view('certificates.create', compact('residents'));
-    }
+        // Counts for status tabs
+        $pendingCount = Certificate::where('status', 'Pending')->count();
+        $approvedCount = Certificate::where('status', 'Approved')->count();
+        $disapprovedCount = Certificate::where('status', 'Disapproved')->count();
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'resident_id' => 'required|exists:residents,id',
-            'type' => 'required|in:Barangay Clearance,Certificate of Residency,Certificate of Indigency,Business Clearance,Barangay ID',
-            'purpose' => 'required|string|max:255',
-            'or_number' => 'nullable|string|max:50',
-            'amount' => 'required|numeric|min:0',
-            'date_issued' => 'required|date',
-            'valid_until' => 'nullable|date|after:date_issued',
-            'remarks' => 'nullable|string',
-        ]);
-
-        $validated['issued_by'] = auth()->id();
-
-        Certificate::create($validated);
-
-        return redirect()->route('certificates.index')
-            ->with('success', 'Certificate issued successfully.');
+        return view('certificates.index', compact('certificates', 'pendingCount', 'approvedCount', 'disapprovedCount'));
     }
 
     public function show(Certificate $certificate)
     {
-        $certificate->load(['resident', 'issuedBy']);
+        $certificate->load(['resident', 'issuedBy', 'reviewedBy']);
         return view('certificates.show', compact('certificate'));
+    }
+
+    public function approve(Request $request, Certificate $certificate)
+    {
+        $validated = $request->validate([
+            'or_number' => 'nullable|string|max:50',
+            'amount' => 'required|numeric|min:0',
+            'valid_until' => 'nullable|date|after:today',
+            'review_remarks' => 'nullable|string',
+        ]);
+
+        $certificate->update([
+            'status' => 'Approved',
+            'or_number' => $validated['or_number'] ?? null,
+            'amount' => $validated['amount'],
+            'valid_until' => $validated['valid_until'] ?? null,
+            'review_remarks' => $validated['review_remarks'] ?? null,
+            'reviewed_by' => auth()->id(),
+            'reviewed_at' => now(),
+            'date_issued' => now(),
+        ]);
+
+        return redirect()->route('certificates.show', $certificate)
+            ->with('success', 'Certificate request approved successfully.');
+    }
+
+    public function disapprove(Request $request, Certificate $certificate)
+    {
+        $validated = $request->validate([
+            'review_remarks' => 'required|string|max:500',
+        ]);
+
+        $certificate->update([
+            'status' => 'Disapproved',
+            'review_remarks' => $validated['review_remarks'],
+            'reviewed_by' => auth()->id(),
+            'reviewed_at' => now(),
+        ]);
+
+        return redirect()->route('certificates.show', $certificate)
+            ->with('success', 'Certificate request has been disapproved.');
     }
 
     public function print(Certificate $certificate)
     {
-        $certificate->load(['resident', 'issuedBy']);
+        if ($certificate->status !== 'Approved') {
+            return redirect()->route('certificates.show', $certificate)
+                ->with('error', 'Only approved certificates can be printed.');
+        }
+
+        $certificate->load(['resident', 'issuedBy', 'reviewedBy']);
         return view('certificates.print', compact('certificate'));
     }
 
@@ -71,6 +100,6 @@ class CertificateController extends Controller
     {
         $certificate->delete();
         return redirect()->route('certificates.index')
-            ->with('success', 'Certificate deleted successfully.');
+            ->with('success', 'Certificate request deleted successfully.');
     }
 }
