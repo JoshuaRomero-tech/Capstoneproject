@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Officials')
 @section('page-title', 'Barangay Officials')
+@section('breadcrumb', 'View and manage elected officials')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-3">

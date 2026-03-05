@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Add Household')
 @section('page-title', 'Add Household')
+@section('breadcrumb', 'Households > Add New')
 
 @section('content')
 <div class="card">

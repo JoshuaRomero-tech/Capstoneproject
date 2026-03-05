@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Residents')
 @section('page-title', 'Resident Management')
+@section('breadcrumb', 'Manage all barangay residents')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-3">

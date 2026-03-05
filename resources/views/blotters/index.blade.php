@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Blotter Records')
 @section('page-title', 'Blotter Records')
+@section('breadcrumb', 'Track and manage blotter cases')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-3">

@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Certificates')
 @section('page-title', 'Certificate Management')
+@section('breadcrumb', 'Issue and track certificates')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-3">

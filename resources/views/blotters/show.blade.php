@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Blotter ' . $blotter->case_no)
 @section('page-title', 'Blotter Details')
+@section('breadcrumb', 'Blotters > Details')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-3">

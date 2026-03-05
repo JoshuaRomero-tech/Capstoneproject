@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title', 'New Blotter')
 @section('page-title', 'New Blotter Record')
+@section('breadcrumb', 'Blotters > New Record')
 
 @section('content')
 <div class="card">

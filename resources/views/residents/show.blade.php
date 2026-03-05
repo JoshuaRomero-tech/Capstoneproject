@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title', $resident->full_name)
 @section('page-title', 'Resident Profile')
+@section('breadcrumb', 'Residents > Profile')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-3">

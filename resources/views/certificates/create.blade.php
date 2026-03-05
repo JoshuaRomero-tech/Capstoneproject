@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Issue Certificate')
 @section('page-title', 'Issue Certificate')
+@section('breadcrumb', 'Certificates > Issue New')
 
 @section('content')
 <div class="card">

@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Official Details')
 @section('page-title', 'Official Details')
+@section('breadcrumb', 'Officials > Details')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-3">

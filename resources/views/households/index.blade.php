@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Households')
 @section('page-title', 'Household Management')
+@section('breadcrumb', 'Manage all household records')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-3">
