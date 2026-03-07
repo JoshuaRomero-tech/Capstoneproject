@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Resident;
 use App\Models\Household;
+use App\Imports\ResidentImport;
 use Illuminate\Http\Request;
 
 class ResidentController extends Controller
@@ -143,5 +144,63 @@ class ResidentController extends Controller
         $resident->delete();
         return redirect()->route('residents.index')
             ->with('success', 'Resident deleted successfully.');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv|max:5120',
+        ]);
+
+        $importer = new ResidentImport();
+        $importer->import($request->file('file')->getPathname());
+
+        $message = "{$importer->getImportedCount()} resident(s) imported successfully.";
+        if ($importer->getSkippedCount() > 0) {
+            $message .= " {$importer->getSkippedCount()} row(s) skipped.";
+        }
+
+        $redirect = redirect()->route('residents.index');
+
+        if ($importer->hasErrors() && $importer->getImportedCount() === 0) {
+            return $redirect->with('error', $message)
+                ->with('import_errors', $importer->getErrors());
+        }
+
+        if ($importer->hasErrors()) {
+            return $redirect->with('warning', $message)
+                ->with('import_errors', $importer->getErrors());
+        }
+
+        return $redirect->with('success', $message);
+    }
+
+    public function downloadTemplate()
+    {
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="residents_template.csv"',
+        ];
+
+        $columns = [
+            'first_name', 'middle_name', 'last_name', 'suffix',
+            'date_of_birth', 'place_of_birth', 'gender', 'civil_status',
+            'nationality', 'religion', 'contact_number', 'email',
+            'address', 'occupation', 'educational_attainment', 'voter_status',
+        ];
+
+        $callback = function () use ($columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+            fputcsv($file, [
+                'Juan', 'Dela', 'Cruz', '', '1990-01-15', 'Manila',
+                'Male', 'Single', 'Filipino', 'Catholic', '09171234567',
+                'juan@email.com', '123 Main St, Brgy. Sample', 'Driver',
+                'College Graduate', 'Registered',
+            ]);
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

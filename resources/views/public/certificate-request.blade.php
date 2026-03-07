@@ -1,5 +1,5 @@
 @extends('layouts.public')
-@section('title', 'Request Certificate - Barangay Profiling System')
+@section('title', 'Request Certificate - CiviTrack')
 
 @section('content')
 <div class="page-banner">

@@ -8,9 +8,77 @@
     <div>
         <h5 class="mb-0">All Residents</h5>
     </div>
-    <a href="{{ route('residents.create') }}" class="btn btn-primary">
-        <i class="bi bi-plus-lg me-1"></i> Add Resident
-    </a>
+    <div class="d-flex gap-2">
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#importModal">
+            <i class="bi bi-file-earmark-arrow-up me-1"></i> Import
+        </button>
+        <a href="{{ route('residents.create') }}" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i> Add Resident
+        </a>
+    </div>
+</div>
+
+{{-- Import success/error messages --}}
+@if(session('warning'))
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    {{ session('warning') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+@endif
+@if(session('error'))
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{ session('error') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+@endif
+@if(session('import_errors'))
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>Import issues:</strong>
+    <ul class="mb-0 mt-1">
+        @foreach(session('import_errors') as $err)
+            <li>{{ $err }}</li>
+        @endforeach
+    </ul>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+@endif
+
+{{-- Import Modal --}}
+<div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ route('residents.import') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="importModalLabel"><i class="bi bi-file-earmark-arrow-up me-2"></i>Import Residents</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted small">Upload an Excel (.xlsx, .xls) or CSV file with resident data. The first row must contain column headers.</p>
+                    <div class="mb-3">
+                        <label for="importFile" class="form-label fw-semibold">Select File</label>
+                        <input type="file" class="form-control" id="importFile" name="file" accept=".xlsx,.xls,.csv" required>
+                        <div class="form-text">Max file size: 5MB</div>
+                    </div>
+                    <div class="card bg-light border-0">
+                        <div class="card-body py-2 px-3">
+                            <p class="fw-semibold mb-1 small">Required columns:</p>
+                            <code class="small">first_name, last_name, date_of_birth, gender, address</code>
+                            <p class="fw-semibold mb-1 mt-2 small">Optional columns:</p>
+                            <code class="small">middle_name, suffix, place_of_birth, civil_status, nationality, religion, contact_number, email, occupation, educational_attainment, voter_status</code>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="{{ route('residents.template') }}" class="btn btn-outline-secondary me-auto">
+                        <i class="bi bi-download me-1"></i> Download Template
+                    </a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success"><i class="bi bi-upload me-1"></i> Import</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <div class="card mb-3">

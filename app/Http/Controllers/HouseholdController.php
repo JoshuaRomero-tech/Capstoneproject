@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Household;
+use App\Imports\HouseholdImport;
 use Illuminate\Http\Request;
 
 class HouseholdController extends Controller
@@ -70,5 +71,47 @@ class HouseholdController extends Controller
         $household->delete();
         return redirect()->route('households.index')
             ->with('success', 'Household deleted successfully.');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv|max:5120',
+        ]);
+
+        $importer = new HouseholdImport();
+        $importer->import($request->file('file')->getPathname());
+
+        $message = "{$importer->getImportedCount()} household(s) imported successfully.";
+        if ($importer->getSkippedCount() > 0) {
+            $message .= " {$importer->getSkippedCount()} row(s) skipped.";
+        }
+
+        $redirect = redirect()->route('households.index');
+
+        if ($importer->hasErrors() && $importer->getImportedCount() === 0) {
+            return $redirect->with('error', $message)->with('import_errors', $importer->getErrors());
+        }
+        if ($importer->hasErrors()) {
+            return $redirect->with('warning', $message)->with('import_errors', $importer->getErrors());
+        }
+        return $redirect->with('success', $message);
+    }
+
+    public function downloadTemplate()
+    {
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="households_template.csv"',
+        ];
+
+        $callback = function () {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, ['household_no', 'address']);
+            fputcsv($file, ['HH-001', '123 Main St, Brgy. Sample']);
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

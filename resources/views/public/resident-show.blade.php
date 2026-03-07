@@ -1,5 +1,5 @@
 @extends('layouts.public')
-@section('title', $resident->full_name . ' - Barangay Profiling System')
+@section('title', $resident->full_name . ' - CiviTrack')
 
 @section('content')
 <div class="page-banner">

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Barangay Profiling System</title>
+    <title>Login - CiviTrack</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -105,9 +105,9 @@
     <div class="login-wrapper">
         <div class="login-left">
             <div class="brand-icon">
-                <i class="bi bi-building"></i>
+                <i class="bi bi-shield-check"></i>
             </div>
-            <h2>Barangay Profiling System</h2>
+            <h2>CiviTrack</h2>
             <p>A comprehensive management platform for efficient barangay operations and community records.</p>
             <ul class="feature-list">
                 <li><i class="bi bi-people-fill"></i> Resident Records Management</li>

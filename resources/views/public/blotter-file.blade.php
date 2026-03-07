@@ -1,5 +1,5 @@
 @extends('layouts.public')
-@section('title', 'File Blotter Report - Barangay Profiling System')
+@section('title', 'File Blotter Report - CiviTrack')
 
 @section('content')
 <div class="page-banner">

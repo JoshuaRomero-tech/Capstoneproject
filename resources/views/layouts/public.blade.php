@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Barangay Profiling System')</title>
+    <title>@yield('title', 'CiviTrack')</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -163,9 +163,9 @@
     <nav class="navbar navbar-expand-lg public-navbar">
         <div class="container">
             <a class="navbar-brand" href="{{ route('public.home') }}">
-                <div class="brand-icon"><i class="bi bi-building"></i></div>
+                <div class="brand-icon"><i class="bi bi-shield-check"></i></div>
                 <div>
-                    <div>Barangay Profiling</div>
+                    <div>CiviTrack</div>
                     <div style="font-size: 0.65rem; opacity: 0.5; font-weight: 400; text-transform: uppercase; letter-spacing: 0.5px;">Community Portal</div>
                 </div>
             </a>
@@ -213,8 +213,8 @@
             <div class="row align-items-center">
                 <div class="col-md-6">
                     <div class="d-flex align-items-center gap-2 mb-2 mb-md-0">
-                        <i class="bi bi-building" style="color: var(--primary-light);"></i>
-                        <span style="color: #fff; font-weight: 600;">Barangay Profiling System</span>
+                        <i class="bi bi-shield-check" style="color: var(--primary-light);"></i>
+                        <span style="color: #fff; font-weight: 600;">CiviTrack</span>
                     </div>
                     <small>&copy; {{ date('Y') }} All rights reserved.</small>
                 </div>

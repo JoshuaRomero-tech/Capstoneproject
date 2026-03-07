@@ -1,5 +1,5 @@
 @extends('layouts.public')
-@section('title', 'Welcome - Barangay Profiling System')
+@section('title', 'Welcome - CiviTrack')
 
 @section('content')
 {{-- Hero Section --}}

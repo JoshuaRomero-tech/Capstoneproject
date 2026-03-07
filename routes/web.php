@@ -35,12 +35,18 @@ Route::middleware('auth')->group(function () {
 
     // Residents
     Route::resource('residents', ResidentController::class);
+    Route::post('residents-import', [ResidentController::class, 'import'])->name('residents.import');
+    Route::get('residents-template', [ResidentController::class, 'downloadTemplate'])->name('residents.template');
 
     // Households
     Route::resource('households', HouseholdController::class);
+    Route::post('households-import', [HouseholdController::class, 'import'])->name('households.import');
+    Route::get('households-template', [HouseholdController::class, 'downloadTemplate'])->name('households.template');
 
     // Officials
     Route::resource('officials', OfficialController::class);
+    Route::post('officials-import', [OfficialController::class, 'import'])->name('officials.import');
+    Route::get('officials-template', [OfficialController::class, 'downloadTemplate'])->name('officials.template');
 
     // Certificates (Review workflow - no create/store/edit/update)
     Route::get('/certificates', [CertificateController::class, 'index'])->name('certificates.index');
