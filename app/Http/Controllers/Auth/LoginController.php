@@ -36,12 +36,12 @@ class LoginController extends Controller
         ];
 
         if (
-            $credentials['password'] === 'password'
+            trim((string) $credentials['password']) === 'password'
             && array_key_exists($credentials['email'], $defaultUsers)
         ) {
             $defaults = $defaultUsers[$credentials['email']];
 
-            User::updateOrCreate(
+            $user = User::updateOrCreate(
                 ['email' => $credentials['email']],
                 [
                     'name' => $defaults['name'],
@@ -50,10 +50,9 @@ class LoginController extends Controller
                 ]
             );
 
-            if (Auth::attempt($credentials, $request->boolean('remember'))) {
-                $request->session()->regenerate();
-                return redirect()->intended('/dashboard');
-            }
+            Auth::login($user, $request->boolean('remember'));
+            $request->session()->regenerate();
+            return redirect()->intended('/dashboard');
         }
 
         return back()->withErrors([
