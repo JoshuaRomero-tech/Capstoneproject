@@ -91,8 +91,9 @@ If you already have a full connection string (like Render External Database URL)
 
 ### Deploy Command
 
-Set Railway Deploy Command to run migrations:
+Set Railway Deploy Command (or `railway.json` pre-deploy) to run migrations and seeders:
 
 ```bash
 php artisan migrate --force
+php artisan db:seed --force
 ```
