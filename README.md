@@ -57,3 +57,42 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Deploying To Railway
+
+This project includes Railway-ready runtime files:
+
+- `Procfile` for the web start command.
+- `nixpacks.toml` for install/build/start phases.
+
+### Required Railway Variables
+
+Set these in your Railway service variables:
+
+- `APP_ENV=production`
+- `APP_DEBUG=false`
+- `APP_KEY=` (generate locally with `php artisan key:generate --show`)
+- `APP_URL=` (your Railway domain)
+
+Database variables for PostgreSQL (Render or Railway):
+
+- `DB_CONNECTION` (`mysql` or `pgsql`)
+- `DB_HOST`
+- `DB_PORT`
+- `DB_DATABASE`
+- `DB_USERNAME`
+- `DB_PASSWORD`
+
+If you already have a full connection string (like Render External Database URL), you can set:
+
+- `DB_CONNECTION=pgsql`
+- `DATABASE_URL=postgresql://...`
+- `DB_SSLMODE=require`
+
+### Deploy Command
+
+Set Railway Deploy Command to run migrations:
+
+```bash
+php artisan migrate --force
+```
