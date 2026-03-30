@@ -13,9 +13,6 @@
                     <a href="{{ route('public.services') }}" class="btn btn-primary btn-lg px-4">
                         <i class="bi bi-file-earmark-text me-2"></i>Request a Certificate
                     </a>
-                    <a href="{{ route('public.residents') }}" class="btn btn-outline-light btn-lg px-4">
-                        <i class="bi bi-search me-2"></i>Find a Resident
-                    </a>
                 </div>
             </div>
             <div class="col-lg-5 d-none d-lg-block text-center">
@@ -108,7 +105,7 @@
             <p class="text-muted">Access our services online — no need to visit the barangay hall for initial requests</p>
         </div>
         <div class="row g-4">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="service-card">
                     <div class="service-icon" style="background: rgba(79,70,229,0.1); color: #4f46e5;">
                         <i class="bi bi-file-earmark-text-fill"></i>
@@ -118,7 +115,7 @@
                     <a href="{{ route('public.certificate-request') }}" class="btn btn-sm btn-primary">Request Now</a>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="service-card">
                     <div class="service-icon" style="background: rgba(245,158,11,0.1); color: #f59e0b;">
                         <i class="bi bi-journal-text"></i>
@@ -126,16 +123,6 @@
                     <h5>File a Blotter</h5>
                     <p>Report incidents and file complaints for proper documentation and mediation.</p>
                     <a href="{{ route('public.blotter-file') }}" class="btn btn-sm btn-outline-primary">File Report</a>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="service-card">
-                    <div class="service-icon" style="background: rgba(16,185,129,0.1); color: #10b981;">
-                        <i class="bi bi-search"></i>
-                    </div>
-                    <h5>Resident Lookup</h5>
-                    <p>Search and view registered residents in the barangay directory.</p>
-                    <a href="{{ route('public.residents') }}" class="btn btn-sm btn-outline-primary">Search Directory</a>
                 </div>
             </div>
         </div>

@@ -180,11 +180,6 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('public.residents*') ? 'active' : '' }}" href="{{ route('public.residents') }}">
-                            <i class="bi bi-people me-1"></i> Residents
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('public.officials*') ? 'active' : '' }}" href="{{ route('public.officials') }}">
                             <i class="bi bi-person-badge me-1"></i> Officials
                         </a>
@@ -220,7 +215,6 @@
                 </div>
                 <div class="col-md-6 text-md-end">
                     <a href="{{ route('public.home') }}" class="me-3">Home</a>
-                    <a href="{{ route('public.residents') }}" class="me-3">Residents</a>
                     <a href="{{ route('public.officials') }}" class="me-3">Officials</a>
                     <a href="{{ route('public.services') }}">Services</a>
                 </div>

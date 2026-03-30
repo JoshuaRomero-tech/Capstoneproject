@@ -13,8 +13,6 @@ use App\Http\Controllers\PublicController;
 
 // ─── Public Portal (No Login Required) ────────────────────
 Route::get('/', [PublicController::class, 'home'])->name('public.home');
-Route::get('/community/residents', [PublicController::class, 'residents'])->name('public.residents');
-Route::get('/community/residents/{resident}', [PublicController::class, 'residentShow'])->name('public.residents.show');
 Route::get('/community/officials', [PublicController::class, 'officials'])->name('public.officials');
 Route::get('/community/services', [PublicController::class, 'services'])->name('public.services');
 Route::get('/community/services/certificate-request', [PublicController::class, 'certificateRequest'])->name('public.certificate-request');

@@ -38,39 +38,6 @@ class PublicController extends Controller
     }
 
     /**
-     * Public resident directory
-     */
-    public function residents(Request $request)
-    {
-        $query = Resident::where('status', 'Active');
-
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('first_name', 'like', "%{$search}%")
-                  ->orWhere('last_name', 'like', "%{$search}%")
-                  ->orWhere('middle_name', 'like', "%{$search}%");
-            });
-        }
-
-        if ($request->filled('gender')) {
-            $query->where('gender', $request->gender);
-        }
-
-        $residents = $query->orderBy('last_name')->orderBy('first_name')->paginate(20);
-
-        return view('public.residents', compact('residents'));
-    }
-
-    /**
-     * Public resident profile
-     */
-    public function residentShow(Resident $resident)
-    {
-        return view('public.resident-show', compact('resident'));
-    }
-
-    /**
      * Public officials listing
      */
     public function officials()
