@@ -151,6 +151,25 @@
         .btn-outline-primary { color: var(--primary-color); border-color: var(--primary-color); }
         .btn-outline-primary:hover { background-color: var(--primary-color); border-color: var(--primary-color); }
 
+        /* Keep form-wrapped action buttons visually merged inside btn-group */
+        .btn-group > form {
+            display: inline-flex;
+            margin: 0;
+        }
+        .btn-group > .btn + form,
+        .btn-group > form + .btn,
+        .btn-group > form + form {
+            margin-left: calc(var(--bs-border-width) * -1);
+        }
+        .btn-group > form:not(:first-child) > .btn {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+        .btn-group > form:not(:last-child) > .btn {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
         /* ── Forms ── */
         .form-control, .form-select {
             border-radius: 10px; border: 1px solid #cbd5e1; padding: 0.6rem 0.85rem;
