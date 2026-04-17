@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Certificate;
-use App\Models\Resident;
+use App\Services\SmsService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CertificateController extends Controller
 {
@@ -44,7 +45,7 @@ class CertificateController extends Controller
         return view('certificates.show', compact('certificate'));
     }
 
-    public function approve(Request $request, Certificate $certificate)
+    public function approve(Request $request, Certificate $certificate, SmsService $smsService)
     {
         $validated = $request->validate([
             'or_number' => 'nullable|string|max:50',
@@ -64,11 +65,13 @@ class CertificateController extends Controller
             'date_issued' => now(),
         ]);
 
+        $this->notifyRequesterViaSms($smsService, $certificate->fresh('resident'));
+
         return redirect()->route('certificates.show', $certificate)
             ->with('success', 'Certificate request approved successfully.');
     }
 
-    public function disapprove(Request $request, Certificate $certificate)
+    public function disapprove(Request $request, Certificate $certificate, SmsService $smsService)
     {
         $validated = $request->validate([
             'review_remarks' => 'required|string|max:500',
@@ -80,6 +83,8 @@ class CertificateController extends Controller
             'reviewed_by' => auth()->id(),
             'reviewed_at' => now(),
         ]);
+
+        $this->notifyRequesterViaSms($smsService, $certificate->fresh('resident'));
 
         return redirect()->route('certificates.show', $certificate)
             ->with('success', 'Certificate request has been disapproved.');
@@ -101,5 +106,35 @@ class CertificateController extends Controller
         $certificate->delete();
         return redirect()->route('certificates.index')
             ->with('success', 'Certificate request deleted successfully.');
+    }
+
+    private function notifyRequesterViaSms(SmsService $smsService, Certificate $certificate): void
+    {
+        $resident = $certificate->resident;
+
+        if (!$resident || !$resident->contact_number) {
+            return;
+        }
+
+        $message = "CiviTrack: Your {$certificate->type} request is " . strtoupper($certificate->status) . ". Ref #CERT-{$certificate->id}.";
+
+        if ($certificate->status === 'Approved') {
+            $message .= ' Please visit the barangay hall to claim your certificate.';
+        }
+
+        if ($certificate->status === 'Disapproved') {
+            $message .= ' Please contact the barangay office for details.';
+
+            if ($certificate->review_remarks) {
+                $message .= ' Reason: ' . Str::limit($certificate->review_remarks, 90);
+            }
+        }
+
+        $smsService->send($resident->contact_number, $message, [
+            'feature' => 'certificate_status_update',
+            'certificate_id' => $certificate->id,
+            'resident_id' => $resident->id,
+            'status' => $certificate->status,
+        ]);
     }
 }

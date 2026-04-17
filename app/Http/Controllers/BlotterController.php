@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Blotter;
-use App\Models\Resident;
+use App\Services\SmsService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class BlotterController extends Controller
 {
@@ -50,7 +51,7 @@ class BlotterController extends Controller
         return view('blotters.review', compact('blotter'));
     }
 
-    public function updateStatus(Request $request, Blotter $blotter)
+    public function updateStatus(Request $request, Blotter $blotter, SmsService $smsService)
     {
         $validated = $request->validate([
             'status' => 'required|in:Pending,Ongoing,Resolved,Dismissed',
@@ -58,7 +59,13 @@ class BlotterController extends Controller
             'remarks' => 'nullable|string',
         ]);
 
+        $previousStatus = $blotter->status;
+
         $blotter->update($validated);
+
+        if ($this->shouldNotifyRequester($previousStatus, $blotter->status)) {
+            $this->notifyRequesterViaSms($smsService, $blotter->fresh('complainant'));
+        }
 
         return redirect()->route('blotters.show', $blotter)
             ->with('success', 'Blotter status updated successfully.');
@@ -69,5 +76,40 @@ class BlotterController extends Controller
         $blotter->delete();
         return redirect()->route('blotters.index')
             ->with('success', 'Blotter record deleted successfully.');
+    }
+
+    private function shouldNotifyRequester(string $previousStatus, string $newStatus): bool
+    {
+        if ($previousStatus === $newStatus) {
+            return false;
+        }
+
+        return in_array($newStatus, ['Resolved', 'Dismissed'], true);
+    }
+
+    private function notifyRequesterViaSms(SmsService $smsService, Blotter $blotter): void
+    {
+        $requester = $blotter->complainant;
+
+        if (!$requester || !$requester->contact_number) {
+            return;
+        }
+
+        $isApproved = $blotter->status === 'Resolved';
+        $decision = $isApproved ? 'APPROVED' : 'DISAPPROVED';
+
+        $message = "CiviTrack: Your blotter report {$blotter->case_no} is {$decision}. Current status: {$blotter->status}.";
+
+        if ($blotter->remarks) {
+            $message .= ' Note: ' . Str::limit($blotter->remarks, 90);
+        }
+
+        $smsService->send($requester->contact_number, $message, [
+            'feature' => 'blotter_status_update',
+            'blotter_id' => $blotter->id,
+            'case_no' => $blotter->case_no,
+            'resident_id' => $requester->id,
+            'status' => $blotter->status,
+        ]);
     }
 }

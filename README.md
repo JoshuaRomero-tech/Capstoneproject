@@ -97,3 +97,31 @@ Set Railway Deploy Command (or `railway.json` pre-deploy) to run migrations and 
 php artisan migrate --force
 php artisan db:seed --force
 ```
+
+## SMS Notifications For Certificate And Blotter Requests
+
+The system can auto-send SMS notifications when:
+
+- A certificate request is approved or disapproved.
+- A blotter report is finalized as Resolved (approved) or Dismissed (disapproved).
+
+### Environment Variables
+
+Add these variables to your environment:
+
+```bash
+SMS_ENABLED=true
+SMS_DRIVER=semaphore
+SEMAPHORE_API_KEY=your_semaphore_api_key
+SEMAPHORE_SENDER_NAME=YourSenderName
+SEMAPHORE_API_ENDPOINT=https://api.semaphore.co/api/v4/messages
+```
+
+For local testing without real SMS delivery:
+
+```bash
+SMS_ENABLED=true
+SMS_DRIVER=log
+```
+
+With the `log` driver, messages are written to your Laravel logs instead of being sent to a provider.

@@ -35,4 +35,15 @@ return [
         ],
     ],
 
+    'sms' => [
+        'enabled' => env('SMS_ENABLED', false),
+        'driver' => env('SMS_DRIVER', 'log'),
+
+        'semaphore' => [
+            'api_key' => env('SEMAPHORE_API_KEY'),
+            'sender_name' => env('SEMAPHORE_SENDER_NAME'),
+            'endpoint' => env('SEMAPHORE_API_ENDPOINT', 'https://api.semaphore.co/api/v4/messages'),
+        ],
+    ],
+
 ];
